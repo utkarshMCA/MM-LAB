@@ -7,8 +7,6 @@ import os
 from pathlib import Path
 from typing import Any
 
-from mutagen import File
-
 SUPPORTED_FORMATS = {".mp3", ".wav", ".flac", ".aac", ".m4a", ".ogg", ".oga", ".wma"}
 
 
@@ -30,6 +28,11 @@ def format_duration(seconds: float | None) -> str:
 
 
 def read_audio(path: Path) -> dict[str, Any]:
+    try:
+        from mutagen import File
+    except ImportError as exc:
+        raise RuntimeError("Mutagen is missing; run: pip install -r requirements.txt") from exc
+
     if not path.is_file():
         raise FileNotFoundError(f"file does not exist: {path}")
     if path.suffix.lower() not in SUPPORTED_FORMATS:
@@ -85,7 +88,7 @@ def main() -> int:
     path = args.path or Path(input("Enter audio path: ").strip())
     try:
         print_report(read_audio(path))
-    except (FileNotFoundError, OSError, ValueError) as exc:
+    except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
         print(f"Error: {exc}")
         return 1
     return 0
