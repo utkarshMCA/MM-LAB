@@ -12,3 +12,6 @@ project root with `pip install -r requirements.txt`.
 
 The report includes file size, duration, bitrate, codec class, channel count,
 sample rate, and embedded tags.
+
+For a quick test, place an audio file in `samples/` and run the command from
+that folder or provide its full path.
