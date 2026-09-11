@@ -23,6 +23,13 @@ and video files. Pillow is used for image metadata and EXIF tags.
 - readable terminal output and machine-readable JSON;
 - clear errors for missing files and unavailable tools.
 
+## Folder layout
+
+- `audio_analyzer/audio.py` — audio-only entry point
+- `image_analyzer/image.py` — image-only entry point
+- `video_analyzer/video.py` — video-only entry point
+- `media_lab.py` — shared implementation and unified CLI
+
 ## Author
 
 Utkarsh Tiwari
