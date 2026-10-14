@@ -8,6 +8,7 @@ Run it from the repository root:
 ```powershell
 python Capstone-Projects/Consolidated-Multimedia-Analyzer/media_lab.py path/to/media-file
 python Capstone-Projects/Consolidated-Multimedia-Analyzer/media_lab.py path/to/media-file --json
+python Capstone-Projects/Consolidated-Multimedia-Analyzer/media_lab.py path/to/media-file --output reports/metadata.json
 ```
 
 Install Python dependencies with:
@@ -17,4 +18,5 @@ python -m pip install -r Capstone-Projects/Consolidated-Multimedia-Analyzer/requ
 ```
 
 Pillow reads image metadata. FFmpeg's `ffprobe` must be installed and available
-on `PATH` for audio and video files.
+on `PATH` for audio and video files. The `--output` option saves structured
+JSON to a chosen path without replacing the input media file.

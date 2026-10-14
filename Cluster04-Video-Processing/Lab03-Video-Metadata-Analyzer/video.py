@@ -10,6 +10,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+SUPPORTED_FORMATS = {".mp4", ".avi", ".mkv", ".mov", ".webm", ".wmv", ".flv", ".m4v", ".mpeg", ".mpg", ".3gp"}
+
 
 def run_probe(path: Path) -> dict[str, Any]:
     if not path.is_file():
@@ -29,7 +31,12 @@ def run_probe(path: Path) -> dict[str, Any]:
 
 
 def report(path: Path) -> dict[str, Any]:
+    if path.suffix.lower() not in SUPPORTED_FORMATS:
+        choices = ", ".join(sorted(SUPPORTED_FORMATS))
+        raise ValueError(f"unsupported video format '{path.suffix or 'unknown'}'; use {choices}")
     raw = run_probe(path)
+    if not any(stream.get("codec_type") == "video" for stream in raw.get("streams", [])):
+        raise ValueError("input does not contain a video stream")
     container = raw.get("format", {})
     streams = []
     for stream in raw.get("streams", []):

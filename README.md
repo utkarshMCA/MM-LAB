@@ -15,7 +15,7 @@ image, audio, and video analyzers inspect media metadata from the command line.
 - Image analysis: format, dimensions, color mode, DPI, file size, and EXIF.
 - Audio analysis: codec, sample rate, channels, duration, and embedded tags.
 - Video analysis: codecs, resolution, frame rate, pixel format, duration, and tags.
-- A unified CLI that prints readable reports or JSON.
+- A unified CLI that prints readable reports or JSON and can save JSON reports to a chosen path.
 
 Images use Pillow, audio tags use Mutagen, and the unified audio/video probe
 uses FFprobe from FFmpeg. The other clusters are present as coursework folders
@@ -40,13 +40,14 @@ Run the unified analyzer from the repository root:
 python Capstone-Projects/Consolidated-Multimedia-Analyzer/media_lab.py path/to/photo.jpg
 python Capstone-Projects/Consolidated-Multimedia-Analyzer/media_lab.py path/to/recording.mp3
 python Capstone-Projects/Consolidated-Multimedia-Analyzer/media_lab.py path/to/clip.mp4 --json
+python Capstone-Projects/Consolidated-Multimedia-Analyzer/media_lab.py path/to/clip.mp4 --output reports/clip.json
 ```
 
 Individual lab entry points:
 
 ```powershell
 python Cluster02-Image-Processing/Lab02-Image-Metadata-Analyzer/image.py path/to/photo.jpg --json
-python Cluster03-Audio-Processing/audio.py path/to/recording.mp3
+python Cluster03-Audio-Processing/audio.py path/to/recording.mp3 --json
 python Cluster04-Video-Processing/Lab03-Video-Metadata-Analyzer/video.py path/to/clip.mp4 --json
 ```
 
@@ -69,8 +70,5 @@ python Cluster04-Video-Processing/Lab03-Video-Metadata-Analyzer/video.py path/to
 `-- docs/
 ```
 
-## Acknowledgment
+See each cluster README for its current implementation status.
 
-The coursework-oriented organization was informed by
-[Suhana Thakur's Multimedia Systems Lab repository](https://github.com/SuhanaThakur07/IC-2k22-89-MS--Suhana_Thakur).
-The code and student details in this repository are maintained separately.

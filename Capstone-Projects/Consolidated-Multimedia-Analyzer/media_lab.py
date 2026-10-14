@@ -11,6 +11,8 @@ from pathlib import Path
 from typing import Any
 
 IMAGE_TYPES = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".webp", ".ppm"}
+AUDIO_TYPES = {".mp3", ".wav", ".flac", ".aac", ".m4a", ".ogg", ".oga", ".wma", ".opus"}
+VIDEO_TYPES = {".mp4", ".avi", ".mkv", ".mov", ".webm", ".wmv", ".flv", ".m4v", ".mpeg", ".mpg", ".3gp"}
 
 
 def size_text(number: int) -> str:
@@ -49,7 +51,7 @@ def image_report(file_path: Path) -> dict[str, Any]:
         raise ValueError(f"cannot read image '{file_path.name}': {exc}") from exc
 
 
-def ffprobe_report(file_path: Path) -> dict[str, Any]:
+def ffprobe_report(file_path: Path, media_type: str) -> dict[str, Any]:
     if shutil.which("ffprobe") is None:
         raise RuntimeError("ffprobe is not installed or is not available on PATH")
     command = [
@@ -63,6 +65,10 @@ def ffprobe_report(file_path: Path) -> dict[str, Any]:
         raw = json.loads(result.stdout)
     except json.JSONDecodeError as exc:
         raise ValueError("ffprobe returned invalid JSON") from exc
+
+    if not any(stream.get("codec_type") == media_type for stream in raw.get("streams", [])):
+        article = "an" if media_type == "audio" else "a"
+        raise ValueError(f"file does not contain {article} {media_type} stream")
 
     streams = []
     for stream in raw.get("streams", []):
@@ -87,7 +93,7 @@ def ffprobe_report(file_path: Path) -> dict[str, Any]:
     details = raw.get("format", {})
     duration = details.get("duration")
     return {
-        "type": "media",
+        "type": media_type,
         "file": file_path.name,
         "file_size": size_text(file_path.stat().st_size),
         "container": details.get("format_long_name") or details.get("format_name", "unknown"),
@@ -101,7 +107,15 @@ def ffprobe_report(file_path: Path) -> dict[str, Any]:
 def inspect(file_path: Path) -> dict[str, Any]:
     if not file_path.is_file():
         raise FileNotFoundError(f"file not found: {file_path}")
-    return image_report(file_path) if file_path.suffix.lower() in IMAGE_TYPES else ffprobe_report(file_path)
+    extension = file_path.suffix.lower()
+    if extension in IMAGE_TYPES:
+        return image_report(file_path)
+    if extension in AUDIO_TYPES:
+        return ffprobe_report(file_path, "audio")
+    if extension in VIDEO_TYPES:
+        return ffprobe_report(file_path, "video")
+    supported = ", ".join(sorted(IMAGE_TYPES | AUDIO_TYPES | VIDEO_TYPES))
+    raise ValueError(f"unsupported media type '{extension or 'no extension'}'; supported extensions: {supported}")
 
 
 def show(report: dict[str, Any], json_mode: bool) -> None:
@@ -125,13 +139,27 @@ def show(report: dict[str, Any], json_mode: bool) -> None:
                 print(f"  {key}: {value}")
 
 
+def save_json(report: dict[str, Any], output_path: Path) -> None:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(
+        json.dumps(report, indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Read metadata from multimedia files")
     parser.add_argument("file", type=Path, help="path to an image, audio, or video file")
     parser.add_argument("--json", action="store_true", help="print JSON instead of a text report")
+    parser.add_argument("--output", type=Path, metavar="JSON_PATH", help="save a JSON report to this path")
     args = parser.parse_args()
     try:
-        show(inspect(args.file), args.json)
+        report = inspect(args.file)
+        if args.output is not None:
+            if args.output.resolve() == args.file.resolve():
+                raise ValueError("JSON output path must differ from the input file")
+            save_json(report, args.output)
+        show(report, args.json)
     except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
         print(f"Error: {exc}", file=sys.stderr)
         return 1

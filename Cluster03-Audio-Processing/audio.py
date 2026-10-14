@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import json
 import os
 from pathlib import Path
 from typing import Any
@@ -60,7 +61,10 @@ def read_audio(path: Path) -> dict[str, Any]:
     }
 
 
-def print_report(report: dict[str, Any]) -> None:
+def print_report(report: dict[str, Any], as_json: bool = False) -> None:
+    if as_json:
+        print(json.dumps(report, indent=2, ensure_ascii=False))
+        return
     print("\n" + "=" * 42)
     print("       AUDIO METADATA REPORT")
     print("=" * 42)
@@ -84,10 +88,11 @@ def print_report(report: dict[str, Any]) -> None:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Analyze audio metadata with Mutagen")
     parser.add_argument("path", nargs="?", type=Path, help="audio file to inspect")
+    parser.add_argument("--json", action="store_true", help="print JSON output")
     args = parser.parse_args()
     path = args.path or Path(input("Enter audio path: ").strip())
     try:
-        print_report(read_audio(path))
+        print_report(read_audio(path), args.json)
     except (FileNotFoundError, OSError, RuntimeError, ValueError) as exc:
         print(f"Error: {exc}")
         return 1
