@@ -31,7 +31,7 @@ def read_audio(path: Path) -> dict[str, Any]:
     try:
         from mutagen import File
     except ImportError as exc:
-        raise RuntimeError("Mutagen is missing; run: pip install -r requirements.txt") from exc
+        raise RuntimeError("Mutagen is missing; install it with: python -m pip install Mutagen") from exc
 
     if not path.is_file():
         raise FileNotFoundError(f"file does not exist: {path}")

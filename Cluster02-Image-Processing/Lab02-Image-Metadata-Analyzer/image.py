@@ -23,7 +23,7 @@ def collect_metadata(path: Path) -> dict[str, Any]:
     try:
         from PIL import ExifTags, Image
     except ImportError as exc:
-        raise RuntimeError("Pillow is missing; run: pip install -r requirements.txt") from exc
+        raise RuntimeError("Pillow is missing; install it with: python -m pip install Pillow") from exc
 
     if not path.is_file():
         raise FileNotFoundError(f"file not found: {path}")

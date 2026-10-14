@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 from typing import Any
 
-IMAGE_TYPES = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".webp"}
+IMAGE_TYPES = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tif", ".tiff", ".webp", ".ppm"}
 
 
 def size_text(number: int) -> str:
@@ -26,7 +26,7 @@ def image_report(file_path: Path) -> dict[str, Any]:
     try:
         from PIL import ExifTags, Image
     except ImportError as exc:
-        raise RuntimeError("Pillow is missing; run: pip install -r requirements.txt") from exc
+        raise RuntimeError("Pillow is missing; install it with: python -m pip install Pillow") from exc
 
     try:
         with Image.open(file_path) as image:

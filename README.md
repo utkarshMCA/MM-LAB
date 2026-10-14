@@ -1,35 +1,76 @@
-# Multimedia Lab Toolkit
+# Multimedia Systems Lab
 
-A clean-room multimedia metadata project for a multimedia laboratory task.
-It inspects images with Pillow and audio/video files with FFprobe, then prints
-either a readable report or JSON.
+An independently implemented collection of multimedia lab work. The current
+image, audio, and video analyzers inspect media metadata from the command line.
 
-## Run
+## Student Information
+
+| Field | Details |
+| --- | --- |
+| Name | Utkarsh Tiwari |
+| Roll number | IC-2K22-94 |
+
+## Implemented Work
+
+- Image analysis: format, dimensions, color mode, DPI, file size, and EXIF.
+- Audio analysis: codec, sample rate, channels, duration, and embedded tags.
+- Video analysis: codecs, resolution, frame rate, pixel format, duration, and tags.
+- A unified CLI that prints readable reports or JSON.
+
+Images use Pillow, audio tags use Mutagen, and the unified audio/video probe
+uses FFprobe from FFmpeg. The other clusters are present as coursework folders
+and are marked individually until implementations are added.
+
+## Setup
 
 ```powershell
-pip install -r requirements.txt
-python media_lab.py photo.jpg
-python media_lab.py movie.mp4 --json
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+python -m pip install -r Capstone-Projects/Consolidated-Multimedia-Analyzer/requirements.txt
 ```
 
-FFmpeg must be installed and `ffprobe` must be available on `PATH` for audio
-and video files. Pillow is used for image metadata and EXIF tags.
+Install FFmpeg and make sure `ffprobe` is on `PATH` for unified audio and video
+inspection.
 
-## Features
+## Usage
 
-- image format, dimensions, color mode, DPI, and EXIF data;
-- audio codec, sample rate, channels, duration, and tags;
-- video dimensions, frame rate, codecs, duration, and tags;
-- readable terminal output and machine-readable JSON;
-- clear errors for missing files and unavailable tools.
+Run the unified analyzer from the repository root:
 
-## Folder layout
+```powershell
+python Capstone-Projects/Consolidated-Multimedia-Analyzer/media_lab.py path/to/photo.jpg
+python Capstone-Projects/Consolidated-Multimedia-Analyzer/media_lab.py path/to/recording.mp3
+python Capstone-Projects/Consolidated-Multimedia-Analyzer/media_lab.py path/to/clip.mp4 --json
+```
 
-- `audio_analyzer/audio.py` — audio-only entry point
-- `image_analyzer/image.py` — image-only entry point
-- `video_analyzer/video.py` — video-only entry point
-- `media_lab.py` — shared implementation and unified CLI
+Individual lab entry points:
 
-## Author
+```powershell
+python Cluster02-Image-Processing/Lab02-Image-Metadata-Analyzer/image.py path/to/photo.jpg --json
+python Cluster03-Audio-Processing/audio.py path/to/recording.mp3
+python Cluster04-Video-Processing/Lab03-Video-Metadata-Analyzer/video.py path/to/clip.mp4 --json
+```
 
-Utkarsh Tiwari
+## Repository Structure
+
+```text
+.
+|-- Capstone-Projects/Consolidated-Multimedia-Analyzer/
+|   |-- media_lab.py
+|   `-- requirements.txt
+|-- Cluster01-Multimedia-Fundamentals/
+|-- Cluster02-Image-Processing/Lab02-Image-Metadata-Analyzer/
+|-- Cluster03-Audio-Processing/
+|-- Cluster04-Video-Processing/Lab03-Video-Metadata-Analyzer/
+|-- Cluster05-Compression/
+|-- Cluster06-Multimedia-Communication/
+|-- Cluster07-Interactive-Multimedia/
+|-- Cluster08-Advanced-Multimedia-AI/
+|-- datasets/
+`-- docs/
+```
+
+## Acknowledgment
+
+The coursework-oriented organization was informed by
+[Suhana Thakur's Multimedia Systems Lab repository](https://github.com/SuhanaThakur07/IC-2k22-89-MS--Suhana_Thakur).
+The code and student details in this repository are maintained separately.
