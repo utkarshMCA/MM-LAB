@@ -72,3 +72,6 @@ python Cluster04-Video-Processing/Lab03-Video-Metadata-Analyzer/video.py path/to
 
 See each cluster README for its current implementation status.
 
+For module relationships and analyzer behavior, see the
+[project UML diagrams](docs/UML-DIAGRAM.md).
+
